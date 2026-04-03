@@ -66,46 +66,45 @@ class RoundRobinScheduler(QWidget):
         burst_times = list(map(int, self.process_input.text().split(',')))
         time_quantum = int(self.time_quantum_input.text())
 
-        processes = len(burst_times) # calculate number of process through the time entered
+        processes = len(burst_times) 
 
-        remaining_times = burst_times.copy() # to dont effect for the orignal list
-        queue = list(range(processes)) # if we want to make change for a process
+        remaining_times = burst_times.copy() 
+        queue = list(range(processes)) 
 
-        execution_order = []  # To store the order of execution
-        executed_processes = set()  # Set to track executed processes and avoid duplication
+        execution_order = []  
+        executed_processes = set()  
 
         while queue:
             process_index = queue.pop(0)
-            burst_time = remaining_times[process_index] # caluclate the remainding time
+            burst_time = remaining_times[process_index] 
 
             if process_index not in executed_processes:
-                executed_processes.add(process_index)  # Add to set to prevent duplication
-                execution_order.append(f"P{process_index+1}")  # Add to execution order
+                executed_processes.add(process_index) 
+                execution_order.append(f"P{process_index+1}")  
 
             if burst_time > time_quantum:
 
                 remaining_times[process_index] -= time_quantum
 
-                queue.append(process_index)  # Re-add process to queue
+                queue.append(process_index)  
             else:
 
 
-                remaining_times[process_index] = 0  # Process is complete
+                remaining_times[process_index] = 0  
 
-        # Sorting execution order based on burst times (priority)##
-        sorted_execution_order = sorted(execution_order, key=lambda x: burst_times[int(x[1])-1]) # convert it to int num cuz index of the array start from 0 while it is opp in number of proccess
-
-        # Clear the table before inserting new values
+        
+        sorted_execution_order = sorted(execution_order, key=lambda x: burst_times[int(x[1])-1]) 
+        
         self.result_table.setRowCount(0)
 
-        # Insert sorted execution order into the table
+        
         for i, process in enumerate(sorted_execution_order):
             self.result_table.insertRow(i)
             self.result_table.setItem(i, 0, QTableWidgetItem(process))
             self.result_table.setItem(i, 1, QTableWidgetItem(f"Time Slot {i+1}"))
 
 
-# Run the application
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = RoundRobinScheduler()
